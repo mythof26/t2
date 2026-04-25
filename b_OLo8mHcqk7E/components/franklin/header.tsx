@@ -56,6 +56,9 @@ export function Header({ title, subtitle }: HeaderProps) {
           <button className="w-10 h-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-sm hover:bg-white transition-colors">
             <Search className="w-5 h-5 text-gray-600" />
           </button>
+          <button className="w-10 h-10 rounded-full bg-[#007AFF] flex items-center justify-center shadow-sm hover:bg-[#0066DD] transition-colors">
+            <Plus className="w-5 h-5 text-white" />
+          </button>
         </div>
       </div>
     </motion.header>

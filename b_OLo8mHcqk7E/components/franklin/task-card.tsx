@@ -2,16 +2,24 @@
 
 import { motion } from "framer-motion"
 import { Clock, CheckCircle2 } from "lucide-react"
-import { Task } from "@/lib/schemas"
+
+interface Task {
+  task_id: string
+  title: string
+  priority: string
+  due_time: string
+  date: string
+  cutoff_date: string
+  completed?: boolean
+}
 
 interface TaskCardProps {
   task: Task
   index: number
   isHero?: boolean
-  onToggle: (taskId: string) => void
 }
 
-export function TaskCard({ task, index, isHero = false, onToggle }: TaskCardProps) {
+export function TaskCard({ task, index, isHero = false }: TaskCardProps) {
   const priorityColors: Record<string, string> = {
     A: "bg-[#007AFF] text-white",
     B: "bg-[#34C759] text-white",
@@ -20,8 +28,6 @@ export function TaskCard({ task, index, isHero = false, onToggle }: TaskCardProp
 
   const priorityLetter = task.priority.charAt(0).toUpperCase()
   const priorityColor = priorityColors[priorityLetter] || "bg-gray-400 text-white"
-
-  const isCompleted = task.status === 'completed';
 
   return (
     <motion.div
@@ -41,7 +47,6 @@ export function TaskCard({ task, index, isHero = false, onToggle }: TaskCardProp
         transition-shadow duration-300
         cursor-pointer
         ${isHero ? "ring-1 ring-[#007AFF]/20" : ""}
-        ${isCompleted ? "opacity-60" : ""}
       `}
     >
       <div className="flex items-start justify-between gap-4">
@@ -57,54 +62,39 @@ export function TaskCard({ task, index, isHero = false, onToggle }: TaskCardProp
             >
               <span className="font-serif font-semibold">{task.priority}</span>
             </span>
-            {isHero && !isCompleted && (
+            {isHero && (
               <span className="text-xs font-medium text-[#007AFF] bg-[#007AFF]/10 px-2 py-0.5 rounded-full">
                 Top Priority
-              </span>
-            )}
-            {task.status === 'carried_over' && (
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                이월됨
               </span>
             )}
           </div>
 
           {/* Task Title */}
-          <h3 className={`text-base font-semibold mb-2 leading-snug ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+          <h3 className="text-base font-semibold text-gray-900 mb-2 leading-snug">
             {task.title}
           </h3>
 
           {/* Metadata */}
           <div className="flex items-center gap-4 text-[13px] text-gray-500">
-            {task.due_time && (
-              <>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{task.due_time}</span>
-                </div>
-                <span className="text-gray-300">|</span>
-              </>
-            )}
-            {task.cutoff_date && <span>Due: {task.cutoff_date}</span>}
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              <span>{task.due_time}</span>
+            </div>
+            <span className="text-gray-300">|</span>
+            <span>Due: {task.cutoff_date}</span>
           </div>
         </div>
 
         {/* Completion Status */}
         <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle(task.task_id);
-          }}
-          disabled={task.status === 'carried_over'}
           className={`
             flex-shrink-0 w-7 h-7 rounded-full
             flex items-center justify-center
             transition-colors duration-200
-            ${isCompleted 
-              ? "bg-[#34C759] text-white border-transparent" 
+            ${task.completed 
+              ? "bg-[#34C759] text-white" 
               : "border-2 border-gray-200 text-transparent hover:border-[#007AFF]"
             }
-            ${task.status === 'carried_over' ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
           <CheckCircle2 className="w-4 h-4" />
